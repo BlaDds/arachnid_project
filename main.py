@@ -1,4 +1,4 @@
-from juego import main
+from arachnid.juego import main
 import sys
 salir = ["salir", "sal", "s", "quit", "q", "exit", "e"]
 salir2 = [word + "()" for word in salir]
