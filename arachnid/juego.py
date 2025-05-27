@@ -1,7 +1,7 @@
 import random
-from carta import Carta
-from mazo_de_reparto import MazoDeReparto
-from tablero import Tablero
+from .carta import Carta
+from .mazo_de_reparto import MazoDeReparto
+from .tablero import Tablero
 
 
 class Juego:
