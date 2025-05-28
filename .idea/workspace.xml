@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="60439f1f-3b79-4f63-8e81-711650931e13" name="Changes" comment="update, show columns vertically" />
+    <list default="true" id="60439f1f-3b79-4f63-8e81-711650931e13" name="Changes" comment="columnas (de cartas) verticales con pandas" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -99,13 +99,22 @@
       <option name="project" value="LOCAL" />
       <updated>1748458977995</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="columnas (de cartas) verticales con pandas">
+      <option name="closed" value="true" />
+      <created>1748459209417</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1748459209417</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="&quot;from juego import main&quot; arreglado" />
     <MESSAGE value="&quot;from&quot; e &quot;import&quot; arreglados" />
     <MESSAGE value="update, show columns vertically" />
-    <option name="LAST_COMMIT_MESSAGE" value="update, show columns vertically" />
+    <MESSAGE value="columnas (de cartas) verticales con pandas" />
+    <option name="LAST_COMMIT_MESSAGE" value="columnas (de cartas) verticales con pandas" />
   </component>
 </project>
