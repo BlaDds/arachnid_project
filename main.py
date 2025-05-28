@@ -1,5 +1,6 @@
 from arachnid.juego import main
 import sys
+import pandas as pd
 salir = ["salir", "sal", "s", "quit", "q", "exit", "e"]
 salir2 = [word + "()" for word in salir]
 def iniciar_juego():
@@ -8,17 +9,19 @@ def iniciar_juego():
     return juego, columnas
 
 def instrucciones():
-    print(f'''Ingresar la carta o la lista de cartas que se quieren mover, cuando aparezca c1,
-    e ingresar DONDE se quiere mover, cuando aparezca c2.
+    print(f'''En el primer input;
+    Ingresar el número de la columna donde está la carta o la lista de cartas que quieras mover,
+en el segundo input; ingresa el número de la columna donde quieras moverla/s.
     
-    también se pueden ingresar ambos dígitos en c1, por ejemplo,
+    También se pueden ingresar ambos dígitos en en el primer input, por ejemplo,
     "13" movería la carta en la columna 1, a la columna 3,
     solo si los valores de las cartas son adecuados.
     
     Podés ingresar r para repartir una fila de cartas.
-    y varias palabras para salir:
+    Y tenés varias palabras para salir:
     {salir}
-    {salir2}''')
+    {salir2}
+''')
 def detectar_jugada(c1, c2, juego):
     # Repartir
     if c1 == "r":
@@ -43,7 +46,6 @@ def detectar_jugada(c1, c2, juego):
             print("Dígitos inválidos.")
             return None, None
 
-    # Caso 1: Un solo dígito.
     if len(c1) == 1 and c1.isdigit():
         col1 = int(c1)
         if c2 == "":
@@ -76,6 +78,16 @@ def inicio():
         except (ValueError, KeyError):
             print("Entrada no válida.")
 
+def aplanar(col): # quita las listas dentro de cada columna para poder mostrarlas con pd
+    resultado = []
+    for item in col:
+        if isinstance(item, list):
+            resultado.extend(item)
+        else:
+            resultado.append(item)
+    return resultado
+
+
 def jugando():
     juego, columnas = iniciar_juego()
     
@@ -83,18 +95,26 @@ def jugando():
         c1 = ""
         c2 = ""
         print("Se muestran las cartas:")
-        for i_c, columna in enumerate(columnas):
-            print(f'{i_c}: {columna}')
+        columnas_aplanadas = [aplanar(col) for col in columnas]
+
+        longitud_max = max(len(col) for col in columnas_aplanadas)
+
+        for i in range(len(columnas_aplanadas)):
+            while len(columnas_aplanadas[i]) < longitud_max:
+                columnas_aplanadas[i].append("")
+
+        df = pd.DataFrame({f'C_{i}': columnas_aplanadas[i] for i in range(len(columnas_aplanadas))})
+        print(df)
         print("(Ingresa 'r' para repartir)")
-        print("")
+        print()
 
         if c1 == "":
-            c1 = input("c1_ ")
+            c1 = input("carta/s en columna _ ")
             if c1 in salir or c1 in salir2:
                 sys.exit()
         c1, c2 = detectar_jugada(c1, c2, juego)
         if c1 is not None and c2 == "":
-            c2 = input("c2_ ")
+            c2 = input("columna 2 _ ")
             if c2 in salir or c2 in salir2:
                 sys.exit()
             c1, c2 = detectar_jugada(str(c1), str(c2), juego)

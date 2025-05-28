@@ -138,8 +138,7 @@ class Juego:
                                     self.tablero.columnas_de_tablero[c1][-1].mostrar()
                                 except AttributeError:
                                     pass
-                                except Exception as e:
-                                    print(f"Exception e, error? {e}") # TODO: delete if no se usa
+                                except Exception:
                                     pass
 
             else: # c1 lista, c2 carta, distinto palo

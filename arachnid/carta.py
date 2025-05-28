@@ -11,7 +11,7 @@ class Carta:
 
     def __repr__(self):
         if self.oculta:
-            return "█"
+            return " █ "
         else:
             if self.valor == 1:
                 return f'A{self.palo}'

@@ -28,13 +28,17 @@ class Tablero:
         return self.columnas_de_tablero # lista con lista de columnas
 
     def lejos(self, c2): # inicia con el índice de la columna donde tiene que hacer pop
-        print("Se comprueba el largo (si es 13 se extrae)")
-        print(f"largo : {len(self.columnas_de_tablero[c2][-1])}")
         if len(self.columnas_de_tablero[c2][-1]) == 13:
-            print(f"Se tiene que sacar {self.columnas_de_tablero[c2][-1]} del juegoo")
             juego = self.columnas_de_tablero[c2].pop()
-            print(f"pero se sacaa: {juego}")
             self.juegos_terminados.append(juego)
+            try:
+                self.columnas_de_tablero[c2][-1].mostrar()
+            except AttributeError:
+                pass
+            except Exception:
+                pass
+
+
 
         self.fin()
 
