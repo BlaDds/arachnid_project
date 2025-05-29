@@ -4,11 +4,10 @@
 
 ## ¿Cómo jugar?
 
-1.  Cloná el repositorio
-    '''bash
+1.  Cloná el repositorio e ingresá a la carpeta
     git clone https://github.com/BlaDds/arachnid_project.git
     cd arachnid_project
-2. ejecutá el juego desde la consola:
+3. ejecutá el juego desde la consola:
     python3 main.py
 
 
@@ -30,8 +29,8 @@ Estado del proyecto:
 
 ✔ Lógica completa de juego.
 ✔ Modularizado.
-Pronto. Interfaz gráfica.
-Pronto. Tests automatizados.
+Pronto: Interfaz gráfica.
+Pronto: Tests automatizados.
 
 
 Las contribuciones son bienvenidas.
