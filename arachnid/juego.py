@@ -69,10 +69,11 @@ class Juego:
             print("ingresa un valor para c2")
             return
 
-        #carta1 = 0
         carta2 = 0
         a_mover = []
         lista_carta2 = []
+        if len(self.tablero.columnas_de_tablero[c1]) == 0:
+            return
         if len(self.tablero.columnas_de_tablero[c2]) == 0: # c2 está vacío, nada para analizar, se mueve c1 a c2
             if len(self.tablero.columnas_de_tablero[c1]) > 0:
                 mover_esto = self.tablero.columnas_de_tablero[c1].pop()
