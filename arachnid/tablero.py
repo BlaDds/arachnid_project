@@ -33,16 +33,14 @@ class Tablero:
             self.juegos_terminados.append(juego)
             try:
                 self.columnas_de_tablero[c2][-1].mostrar()
-            except AttributeError:
+            except (AttributeError, IndexError):
                 pass
-            except Exception:
-                pass
-
-
-
         self.fin()
 
     def fin(self):
-        if len(self.juegos_terminados) == 104:
+        print("juegos terminados: ",len(self.juegos_terminados))
+        if len(self.juegos_terminados) == 8:
+            print()
             print(f"GANASTE")
+            print()
             return

@@ -34,7 +34,7 @@ class Carta:
                 self.palo == otra_carta.palo)
 
     def acepta_estar_encima_de(self, carta2):
-        return (self.valor == carta2.valor + 1)
+        return self.valor == carta2.valor + 1
 
     def fuera_de_juego(self):
         self.in_game = False

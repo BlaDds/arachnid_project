@@ -94,6 +94,9 @@ def jugando():
     while True:
         c1 = ""
         c2 = ""
+        print()
+        print("-_-_-_-_" * 15)
+        print()
         print("Se muestran las cartas:")
         columnas_aplanadas = [aplanar(col) for col in columnas]
 

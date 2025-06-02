@@ -58,7 +58,7 @@ class Juego:
                         self.tablero.lejos(index)
                     else:
                         self.tablero.columnas_de_tablero[index].append(cartas[index])
-            except Exception:
+            except IndexError:
                 self.tablero.columnas_de_tablero[index].append(cartas[index])
 
     def analizar(self, c1, c2): # Analiza jugadas adecuadas e incorrectas
@@ -137,9 +137,7 @@ class Juego:
                                 self.tablero.lejos(c2)
                                 try:
                                     self.tablero.columnas_de_tablero[c1][-1].mostrar()
-                                except AttributeError:
-                                    pass
-                                except Exception:
+                                except (AttributeError,IndexError):
                                     pass
 
             else: # c1 lista, c2 carta, distinto palo
@@ -175,15 +173,10 @@ class Juego:
                         self.tablero.lejos(c2)
                     except AttributeError:
                         carta2 = self.tablero.columnas_de_tablero[c2].pop()
-                        agregar = [carta2, carta1]
-                        self.tablero.columnas_de_tablero[c2].append(agregar)
-                        self.tablero.lejos(c2)
-                        pass
-                    except Exception:
-                        carta2 = self.tablero.columnas_de_tablero[c2].pop()
                         agregar = [carta2,carta1]
                         self.tablero.columnas_de_tablero[c2].append(agregar)
                         self.tablero.lejos(c2)
+                        pass
                 else:
                     popped = self.tablero.columnas_de_tablero[c1].pop()
                     self.tablero.columnas_de_tablero[c2].append(popped)
@@ -197,9 +190,6 @@ class Juego:
             pass
         except IndexError:
             pass
-        print()
-        print("-_-_-_-_"*15)
-        print()
 
 def main():
     juego = Juego()
