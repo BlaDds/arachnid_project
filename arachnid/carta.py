@@ -27,14 +27,5 @@ class Carta:
     def mostrar(self):
         self.oculta = False
 
-    def se_mueve_con(self,
-                     otra_carta):  # Carta.se_mueve_con(carta2) se usa para saber si se pueden mover cartas juntas porque son del mismo palo.
-        return (
-                self.valor == (otra_carta.valor + 1) and
-                self.palo == otra_carta.palo)
-
-    def acepta_estar_encima_de(self, carta2):
-        return self.valor == carta2.valor + 1
-
     def fuera_de_juego(self):
         self.in_game = False
