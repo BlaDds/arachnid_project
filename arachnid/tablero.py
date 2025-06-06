@@ -1,28 +1,24 @@
-from openpyxl.xml import defusedxml_env_set
-
-
 class Tablero:
     def __init__(self):
-        self.columnas = {i : [] for i in range(1,11)} # diccionario con entero como clave y lista como valor. Clave desde 1 a 10
+        self.columnas = {i : [] for i in range(1,11)}
         self.columnas_de_tablero = []
         self.juegos_terminados = []
 
-    def recoger_y_repartir(self, cartas): # salta error si cartas NO es lista o SI NO contiene 44 elementos.
-        carta_iterador = iter(cartas)       # reparte a los espacios de cartas, para empezar a jugar.
+    def recoger_y_repartir(self, cartas): # reparte solo al principio, las cartas que se ven al empezar el juego.
+        carta_iterador = iter(cartas)
 
-        for columna in range(1,5): # guarda cartas en las primeras 4 columnas, y 4 filas,
+        for columna in range(1,5): # guarda cartas en las primeras 4 columnas, y 4 filas.
             for _ in range(1,5):
                 self.columnas[columna].append(next(carta_iterador))
 
-        for columna in range(5,11): # guarda cartas en las últimas 6 columnas, y 3 filas,
+        for columna in range(5,11): # guarda cartas en las últimas 6 columnas, y 3 filas.
             for _ in range(1,4):
                 self.columnas[columna].append(next(carta_iterador))
 
-        for columna in range(1,11):
+        for columna in range(1,11): # reparte las últimas cartas que se ven al principio del juego.
             carta = next(carta_iterador)
             carta.mostrar()
             carta.bloqueada = False
-            carta.carta_encima = False
             self.columnas[columna].append(carta)
 
     def update_columnas_de_tablero(self):
@@ -30,7 +26,8 @@ class Tablero:
             self.columnas_de_tablero.append(columna)
         return self.columnas_de_tablero # lista con lista de columnas
 
-    def lejos(self, c2): # inicia con el índice de la columna donde tiene que hacer pop
+    def lejos(self, c2): # Observa las listas de cartas de un mismo palo,
+        # para eliminar las listas completadas. (Desde A hasta K)
         if len(self.columnas_de_tablero[c2][-1]) == 13:
             juego = self.columnas_de_tablero[c2].pop()
             self.juegos_terminados.append(juego)
@@ -38,20 +35,28 @@ class Tablero:
                 self.columnas_de_tablero[c2][-1].mostrar()
             except (AttributeError, IndexError):
                 pass
+
         self.fin()
 
-    def fin(self):
-        print("juegos terminados: ",len(self.juegos_terminados))
-        if len(self.juegos_terminados) == 8:
-            print()
-            print(f"GANASTE")
-            print()
+    def fin(self): # analiza para dar fin al juego.
+        contador_de_columnas = 0 # si se llega a diez, es porque el usuario ha ganado el juego
+        for columna in range(1,11):
+            if len(self.columnas[columna]) == 0:
+                contador_de_columnas +=1
+            else:
+                break
+        if contador_de_columnas == 10:
             return
 
-    def prepare_list(self,c1,i):
-        lista1 = self.columnas_de_tablero[c1][-1][i:]
-        self.columnas_de_tablero[c1][-1]= self.columnas_de_tablero[c1][-1][:i]
-        self.columnas_de_tablero[c1][-1].append(lista1)
+
+    def prepare_list(self,c1,indice_carta):
+        try:
+            lista1 = self.columnas_de_tablero[c1][-1][indice_carta:]
+            self.columnas_de_tablero[c1][-1] = self.columnas_de_tablero[c1][-1][:indice_carta]
+            self.columnas_de_tablero[c1].append(lista1)
+        except (TypeError, AttributeError, IndexError):
+            pass
+
 
     def move_to_empty_col(self, col1, col2): # mueve sin reglas, el último elemento de la columma c1 a el último lugar de la columna c2
         elemento = self.columnas_de_tablero[col1].pop()
@@ -71,7 +76,7 @@ class Tablero:
             carta1 = self.columnas_de_tablero[col1].pop()
             self.columnas_de_tablero[col2][-1].append(carta1)
         else:
-            carta1 = col1.pop()
+            carta1 = self.columnas_de_tablero[col1].pop()
             self.columnas_de_tablero[col2].append(carta1)
 
     def move_list_to_list(self, col1, col2, mismo_palo=True):
@@ -79,7 +84,7 @@ class Tablero:
             lista1 = self.columnas_de_tablero[col1].pop()
             self.columnas_de_tablero[col2][-1].extend(lista1)
         else:
-            lista1 = col1.pop()
+            lista1 = self.columnas_de_tablero[col1].pop()
             self.columnas_de_tablero[col2].append(lista1)
 
     def move_list_to_card(self, col1, col2, mismo_palo=True):
@@ -92,28 +97,36 @@ class Tablero:
             lista1 = self.columnas_de_tablero[col1].pop()
             self.columnas_de_tablero[col2].append(lista1)
 
-    def fix_col(self,col1, col2):
-        self.lejos(col2)
+    def fix_col(self,col1, col2): # Revisa las columnas para que no queden cartas sin mostrar o listas vacías
+        try:
+            self.lejos(col2)
+        except (TypeError, AttributeError):
+            pass
+
+        if len(self.columnas_de_tablero[col2]) > 0:
+            if isinstance(self.columnas_de_tablero[col2][-1],list):
+                if len(self.columnas_de_tablero[col2][-1]) == 1:
+                    self.columnas_de_tablero[col2][-1] = self.columnas_de_tablero[col2][-1][0]
+                elif len(self.columnas_de_tablero[col2][-1]) == 0:
+                    self.columnas_de_tablero[col2].pop()
         if len(self.columnas_de_tablero[col1]) > 0:
             if isinstance(self.columnas_de_tablero[col1][-1], list):
                 if len(self.columnas_de_tablero[col1][-1]) == 0:
-                    print("Lista vacía se elimina correctamente, FUNCIONÉ :DDDDDD")
-                    self.columnas_de_tablero[col1] = col1.pop()
-                    print("Tengo que mostrar c1? D:")
+                    self.columnas_de_tablero[col1] = self.columnas_de_tablero[col1].pop()
                 elif len(self.columnas_de_tablero[col1][-1]) == 1:
-                    print("FUAAA arreglo c1 :D")
-                    print(f"antes: {self.columnas_de_tablero[col1]}")
                     self.columnas_de_tablero[col1][-1] = self.columnas_de_tablero[col1][-1][0]
-                    print(f"después: {self.columnas_de_tablero[col1]}")
-            else:
-                try:
-                    print("Apuntamos a la carta y la mostramos si no está mostrada:")
-                    print(f"columna antes del intento: {self.columnas_de_tablero[col1]}")
-                    self.columnas_de_tablero[col1][-1].mostrar()
-                    print(f"Columna después: {self.columnas_de_tablero[col1]}")
-                except Exception as e:
-                    print("Manejar exception ::::: ",e)
+
+        try:
+            self.columnas_de_tablero[col1][-1].mostrar()
+        except (TypeError, AttributeError, IndexError):
+            pass
+        try:
+            self.columnas_de_tablero[col2][-1].mostrar()
+        except (TypeError,AttributeError, IndexError):
+            pass
         print()
-        print("Me faltó algo? fin del fix :p ¿fixed?")
+
+
+
 
 

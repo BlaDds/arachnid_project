@@ -108,16 +108,18 @@ def jugando():
 
         df = pd.DataFrame({f'C_{i}': columnas_aplanadas[i] for i in range(len(columnas_aplanadas))})
         print(df)
+        print()
         print("(Ingresa 'r' para repartir)")
         print()
 
         if c1 == "":
-            c1 = input("carta/s en columna _ ")
+            c1 = input("carta/s en columna _ ").strip()
             if c1 in salir or c1 in salir2:
                 sys.exit()
         c1, c2 = detectar_jugada(c1, c2, juego)
         if c1 is not None and c2 == "":
-            c2 = input("columna 2 _ ")
+            c2 = input("columna 2 _ ").strip()
+
             if c2 in salir or c2 in salir2:
                 sys.exit()
             c1, c2 = detectar_jugada(str(c1), str(c2), juego)

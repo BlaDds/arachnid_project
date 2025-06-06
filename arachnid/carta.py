@@ -1,9 +1,8 @@
 class Carta:
-    def __init__(self, valor, palo, oculta=True, in_game=True, carta_encima=True):
+    def __init__(self, valor, palo, oculta=True, in_game=True):
         self.valor = valor
         self.palo = palo
         self.oculta = oculta
-        self.carta_encima = carta_encima
         self.in_game = in_game
 
     def __str__(self):
