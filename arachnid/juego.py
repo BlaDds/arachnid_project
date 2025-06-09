@@ -9,12 +9,8 @@ class Juego:
         self.tablero = Tablero()
         self.mazo_de_reparto = MazoDeReparto()
         self.baraja_de_inicio = []
-        self.fin = False
+        self.playing = True
 
-    def user_won(self):
-        if self.fin:
-            print("HAS GANADOOO")
-            return
     def crear_cartas(self): # creates
         for cantidad in range(8): # Crea 8 juegos completos de cartas. (Juego de carta: desde A hasta K)
             for _ in range(1,14): # Valores de carta, desde 1 a 13
@@ -22,6 +18,17 @@ class Juego:
                     self.baraja_de_inicio.append(Carta(valor=_, palo="♥")) # El palo se puede cambiar a gusto. Predeterminado = "♥"
                 else:
                     self.baraja_de_inicio.append(Carta(valor=_, palo="♦")) # El palo se puede cambiar a gusto. Predeterminado = "♦"
+
+    def end(self):
+        count = 0
+        for col in self.tablero.columnas_de_tablero:
+            if len(col) == 0:
+                count+=1
+        if count == 10:
+            self.playing = False
+            return self.playing
+        else:
+            return self.playing
 
     def mezclar(self):
         random.shuffle(self.baraja_de_inicio)
@@ -50,7 +57,7 @@ class Juego:
                     carta = self.tablero.columnas_de_tablero[index][-1][-1]
                     if carta.palo == cartas[index].palo and carta.valor == cartas[index].valor+1:
                         self.tablero.columnas_de_tablero[index][-1].append(cartas[index])
-                        self.tablero.lejos(index)
+                        self.tablero.move_away(index)
                     else:
                         self.tablero.columnas_de_tablero[index].append(cartas[index])
                 else:
@@ -58,7 +65,7 @@ class Juego:
                     if carta.palo == cartas[index].palo and carta.valor == cartas[index].valor + 1:
                         carta = self.tablero.columnas_de_tablero[index].pop()
                         self.tablero.columnas_de_tablero[index].append([carta,cartas[index]])
-                        self.tablero.lejos(index)
+                        self.tablero.move_away(index)
                     else:
                         self.tablero.columnas_de_tablero[index].append(cartas[index])
             except IndexError:
@@ -66,34 +73,33 @@ class Juego:
 
     def analizar(self, c1, c2): # Analiza jugadas adecuadas e incorrectas
         if not isinstance(c1,int):
-            print("Ingresa un valor para la primer columna")
-            return
+            print("Ingresa un valor adecuado para la primer columna")
+            return self.end()
         elif not isinstance(c2,int):
-            print("ingresa un valor para la segunda columna")
-            return
+            print("ingresa un valor adecuado para la segunda columna")
+            return self.end()
 
         carta2 = 0
         lista_carta2 = []
-        if len(self.tablero.columnas_de_tablero[c1]) == 0: # c1 es la columna vacía
+        if len(self.tablero.columnas_de_tablero[c1]) == 0: # c1 es una columna vacía
             print("Elige una columna con cartas")
-            return
+            return self.end()
         if len(self.tablero.columnas_de_tablero[c2]) == 0: # c2 está vacío, nada para analizar, se mueve c1 a c2
             if len(self.tablero.columnas_de_tablero[c1]) > 0: # Queda al menos un elemento en c1
                 self.tablero.move_to_empty_col(c1,c2)
                 self.tablero.fix_col(c1, c2)
-                #self.tablero.lejos(c2)
-                return
+                return self.end()
 
-        elif isinstance(self.tablero.columnas_de_tablero[c2][-1], list): # Si el último elemento de c2 es una lista:
-            carta2 = self.tablero.columnas_de_tablero[c2][-1][-1] # última carta de la columna
-            lista_carta2 = self.tablero.columnas_de_tablero[c2][-1] # lista donde está carta2 Y último elemento de c2
+        elif isinstance(self.tablero.columnas_de_tablero[c2][-1], list): # c2 es una lista
+            carta2 = self.tablero.columnas_de_tablero[c2][-1][-1] # última carta de c2
+            lista_carta2 = self.tablero.columnas_de_tablero[c2][-1] # lista que contiene a carta2
         else:
             carta2 = self.tablero.columnas_de_tablero[c2][-1] # Último elemento de c2
             lista_carta2 = None
 
         if isinstance(self.tablero.columnas_de_tablero[c1][-1], list): # c1 es una lista
-            carta1 = self.tablero.columnas_de_tablero[c1][-1][-1] # carta1 es la última carta dentro de la lista
-            if carta1.palo == carta2.palo: # Mismo palo
+            carta1 = self.tablero.columnas_de_tablero[c1][-1][-1] # carta1 es el último elemento dentro de c1
+            if carta1.palo == carta2.palo: # mismos palos
 
                 for indice_carta, cada_carta in enumerate(self.tablero.columnas_de_tablero[c1][-1]):
                     if cada_carta.valor == carta2.valor-1: # un valor de c1 encaja con c2
@@ -108,9 +114,9 @@ class Juego:
                             self.tablero.move_list_to_card(c1,c2,True)
 
                         self.tablero.fix_col(c1, c2)
-                        return
+                        return self.end()
 
-            else: # c1 lista, distintos palos
+            else: # c1 es una lista, distintos palos
                 for i, carta in enumerate(self.tablero.columnas_de_tablero[c1][-1]):
                     if carta.valor == carta2.valor-1:
                         if i == 0:
@@ -123,7 +129,7 @@ class Juego:
         else: # c1 es una carta
             carta1 = self.tablero.columnas_de_tablero[c1][-1]
             if carta1.valor == carta2.valor-1:
-                if carta1.palo == carta2.palo:
+                if carta1.palo == carta2.palo: # mismos palos
 
                     if not lista_carta2 is None:  # el último elemento de c2 es una lista
                         self.tablero.move_card_to_list(c1, c2, True)
@@ -133,10 +139,11 @@ class Juego:
                         self.tablero.move_card_to_card(c1, c2, True)
                         self.tablero.fix_col(c1, c2)
 
-                else:# c1 es una carta, distintos palos
+                else: # c1 es una carta, distintos palos
                     self.tablero.move_card_to_card(c1,c2,False)
                     self.tablero.fix_col(c1,c2)
         print()
+        return self.end()
 
 def main():
     juego = Juego()

@@ -26,8 +26,8 @@ class Tablero:
             self.columnas_de_tablero.append(columna)
         return self.columnas_de_tablero # lista con lista de columnas
 
-    def lejos(self, c2): # Observa las listas de cartas de un mismo palo,
-        # para eliminar las listas completadas. (Desde A hasta K)
+    def move_away(self, c2): # Observa las listas de cartas de un mismo palo,
+        # Para eliminar las listas completadas. (Desde A hasta K)
         if len(self.columnas_de_tablero[c2][-1]) == 13:
             juego = self.columnas_de_tablero[c2].pop()
             self.juegos_terminados.append(juego)
@@ -36,20 +36,7 @@ class Tablero:
             except (AttributeError, IndexError):
                 pass
 
-        self.fin()
-
-    def fin(self): # analiza para dar fin al juego.
-        contador_de_columnas = 0 # si se llega a diez, es porque el usuario ha ganado el juego
-        for columna in range(1,11):
-            if len(self.columnas[columna]) == 0:
-                contador_de_columnas +=1
-            else:
-                break
-        if contador_de_columnas == 10:
-            return
-
-
-    def prepare_list(self,c1,indice_carta):
+    def prepare_list(self,c1,indice_carta): # prepara una lista para mover a c2.
         try:
             lista1 = self.columnas_de_tablero[c1][-1][indice_carta:]
             self.columnas_de_tablero[c1][-1] = self.columnas_de_tablero[c1][-1][:indice_carta]
@@ -62,7 +49,7 @@ class Tablero:
         elemento = self.columnas_de_tablero[col1].pop()
         self.columnas_de_tablero[col2].append(elemento)
 
-    def move_card_to_card(self, col1, col2, mismo_palo=True):# usar solamente cuando el último elemento de las columnas es una carta SOLA
+    def move_card_to_card(self, col1, col2, mismo_palo=True):# usar solamente cuando el último elemento de las columnas es una carta
         if mismo_palo:
             carta1 = self.columnas_de_tablero[col1].pop()
             carta2 = self.columnas_de_tablero[col2].pop()
@@ -99,7 +86,7 @@ class Tablero:
 
     def fix_col(self,col1, col2): # Revisa las columnas para que no queden cartas sin mostrar o listas vacías
         try:
-            self.lejos(col2)
+            self.move_away(col2)
         except (TypeError, AttributeError):
             pass
 

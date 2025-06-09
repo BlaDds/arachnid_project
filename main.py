@@ -1,8 +1,9 @@
 from arachnid.juego import main
 import sys
 import pandas as pd
-salir = ["salir", "sal", "s", "quit", "q", "exit", "e"]
+salir = ["salir", "sal", "s", "quit", "q", "exit"]
 salir2 = [word + "()" for word in salir]
+playing = True
 def iniciar_juego():
     juego = main()
     columnas = juego.tablero.update_columnas_de_tablero()
@@ -23,10 +24,9 @@ en el segundo input; ingresa el número de la columna donde quieras moverla/s.
     {salir2}
 ''')
 def detectar_jugada(c1, c2, juego):
-    # Repartir
     if c1 == "r":
         juego.repartir()
-        return None, None  # Reinciar entradas
+        return None, None  # reincia entradas
 
     # Caracteres inválidos.
     if not c1.isdigit() or len(c1) > 2:
@@ -40,8 +40,12 @@ def detectar_jugada(c1, c2, juego):
             return None, None
         try:
             col1, col2 = int(c1[0]), int(c1[1])
-            juego.analizar(col1, col2)
-            return None, None  # Jugada ejecutada, reiniciar entradas
+            playing = juego.analizar(col1, col2)
+            if playing == False:
+                return "Fin del juego", "Gracias por jugar"
+            else:
+                return None, None
+
         except ValueError:
             print("Dígitos inválidos.")
             return None, None
@@ -58,8 +62,11 @@ def detectar_jugada(c1, c2, juego):
             if col1 == col2:
                 print("Debes elegir columnas distintas.")
                 return None, None
-            juego.analizar(col1, col2)
-            return None, None
+            playing = juego.analizar(col1, col2)
+            if playing == False:
+                return "Fin del juego", "Gracias por jugar"
+            else:
+                return None, None
 
     print("Entrada inválida.")
     return None, None
@@ -68,6 +75,7 @@ def detectar_jugada(c1, c2, juego):
 def inicio():
     opciones={1:jugando, 2:instrucciones, 3:sys.exit}
     while True:
+        print()
         print("Presiona '1' para iniciar juego.")
         print("Presiona '2' para ver las instrucciones.")
         print("Presiona '3' para salir")
@@ -91,7 +99,7 @@ def aplanar(col): # quita las listas dentro de cada columna para poder mostrarla
 def jugando():
     juego, columnas = iniciar_juego()
     
-    while True:
+    while playing:
         c1 = ""
         c2 = ""
         print()
@@ -110,7 +118,7 @@ def jugando():
         print(df)
         print()
         print("(Ingresa 'r' para repartir)")
-        print()
+        print("\n"*4)
 
         if c1 == "":
             c1 = input("carta/s en columna _ ").strip()
@@ -123,5 +131,12 @@ def jugando():
             if c2 in salir or c2 in salir2:
                 sys.exit()
             c1, c2 = detectar_jugada(str(c1), str(c2), juego)
+        elif c1 == "Fin del juego" and c2 == "Gracias por jugar":
+            print(c1)
+            print(c2)
+            print("\n"*2)
+            return
 
-inicio()
+
+while True:
+    inicio()
